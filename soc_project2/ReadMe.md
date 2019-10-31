@@ -116,7 +116,10 @@ You are not required to implement recovery mechanism in this project.
 - Akka (ver 2.5.4 or higher)
 - sqlite-jdbc (ver 3.20.0 or higher)
 
-## API
+## API 
+
+(for better look at APIs look at the [pdf](P2-assignment.pdf))
+
 RESTful API
 Request Response Description
 ```
