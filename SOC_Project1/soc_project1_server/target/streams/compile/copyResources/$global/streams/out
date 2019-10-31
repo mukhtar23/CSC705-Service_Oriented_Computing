@@ -1,0 +1,4 @@
+[0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\mukht\Desktop\SOC_Project1\soc_project1_server\conf\application.conf,C:\Users\mukht\Desktop\SOC_Project1\soc_project1_server\target\scala-2.13\classes\application.conf)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\mukht\Desktop\SOC_Project1\soc_project1_server\conf\logback.xml,C:\Users\mukht\Desktop\SOC_Project1\soc_project1_server\target\scala-2.13\classes\logback.xml)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	(C:\Users\mukht\Desktop\SOC_Project1\soc_project1_server\conf\routes,C:\Users\mukht\Desktop\SOC_Project1\soc_project1_server\target\scala-2.13\classes\routes)[0m
