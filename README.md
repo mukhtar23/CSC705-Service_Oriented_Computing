@@ -10,6 +10,6 @@ You will need the following to run the most of the projects:
 - sbt (ver 1.2.1 or higher) [tested with ver 1.2.8]
 - Play (ver 2.6.18 or higher) [Don’t need to download manually, installed with sbt]
 
-The requirements pdf for each project will have additional software to download specific to that project.
+The pdf for each project will have additional software to download that is specific to that project.
 
 *If downloaded directly, the projects may not not run, so you may need to create new Play projects and then copy the code over.
