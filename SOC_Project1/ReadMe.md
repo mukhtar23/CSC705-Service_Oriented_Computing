@@ -62,12 +62,12 @@ server can be started by executing command ‘ sbt run ’ in your submitted dir
     Hint
     ● Import jackson.databind.JsonNode and jackson.databind.node.ObjectNode .
 #### 3. SQL Database Access
-- Add a method to store users’ location tracking information in an SQL database, use SQLite as your database engine. Refer to: https://www.playframework.com/documentation/2.7.x/JavaDatabase, http://www.sqlitetutorial.net/sqlite-java/
-    Notes
-    ● Configure database properties in conf/application.conf file.
-    ● Inject a Play.db.Database to use the default datasource.
-    ● (Optional) Use asynchronous action for database operations.
-  - Calculate the movement of the user since start, return it in the response to POST request.
+- Add a method to store users’ location tracking information in an SQL database, use SQLite as your database engine. Refer to: https://www.playframework.com/documentation/2.7.x/JavaDatabase and http://www.sqlitetutorial.net/sqlite-java/
+    - Notes
+      - Configure database properties in conf/application.conf file.
+      - Inject a Play.db.Database to use the default datasource.
+      - (Optional) Use asynchronous action for database operations.
+- Calculate the movement of the user since start, return it in the response to POST request.
 #### 4. Running the Server
 - Use: sbt run to run this application. The default port for a Play application is 9000. You can access your server from: localhost:9000
 - If you wish to access your application via other host names, add them in conf/application.conf like this:
