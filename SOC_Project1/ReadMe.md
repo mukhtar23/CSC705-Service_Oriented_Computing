@@ -34,7 +34,7 @@ server can be started by executing command ‘ sbt run ’ in your submitted dir
 ### Server
 #### 1. Initialization
   - Install the latest version of sbt : http://www.scala-sbt.org/download.html
-  - Create a new Play project: sbt new playframework/play-java-seed.g8 (Enter project name and other info as prompted)
+  - Create a new Play project with: ```sbt new playframework/play-java-seed.g8``` (Enter project name and other info as prompted)
   - Try running the server from the project root: sbt run (The first run will take some time as dependencies are downloaded. Test it by visiting localhost:9000.) Refer to: https://www.playframework.com/documentation/2.7.x/NewApplication
   - (Optional) Setup IDE for your Play application. Refer to: https://www.playframework.com/documentation/2.7.x/IDE
 #### 2. Adding a POST Method
