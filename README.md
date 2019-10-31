@@ -12,4 +12,4 @@ You will need the following to run the most of the projects:
 
 The pdf for each project will have additional software to download that is specific to that project.
 
-*If downloaded directly, the projects may not not run, so you may need to create new Play projects and then copy the code over.
+*If downloaded directly, the projects may not not run, so you may need to create new Play project (using: sbt new playframework/play-java-seed.g8) and then copy the code over.
