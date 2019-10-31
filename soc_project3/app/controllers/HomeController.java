@@ -39,7 +39,6 @@ public class HomeController extends Controller {
     // Project 3 sources
     final String sourceFile = "project3.owl";
     final String sourceUrl = "http://www.semanticweb.org/mukht/ontologies/2019/9/soc_project3";
-    
     final String NS = sourceUrl + "#";
     
     private OntModel baseOntology;
@@ -59,6 +58,9 @@ public class HomeController extends Controller {
         return ok(views.html.index.render());
     }
 
+    /**
+     * Loads the ontology with a reasoner
+     */
     public void loadOntology(){
         // Read the ontology. No reasoner yet.
         baseOntology = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
@@ -116,6 +118,9 @@ public class HomeController extends Controller {
         System.out.println();
     }
 
+    /**
+     * Prints all the classes and individuals in the ontology
+     */
     public void printOntology() {
         ExtendedIterator classes = ontReasoned.listClasses();
 
@@ -191,7 +196,7 @@ public class HomeController extends Controller {
         OntProperty hasSender = ontReasoned.getObjectProperty(NS + "has_sender");
         OntProperty hasReceiver = ontReasoned.getObjectProperty(NS + "has_receiver");
 
-        // Get sender and receiver
+        // Get sender and receiver properties
         Individual sender = ontReasoned.getIndividual(NS + senderId);
         Individual receiver = ontReasoned.getIndividual(NS + receiverId);
         
@@ -239,7 +244,6 @@ public class HomeController extends Controller {
         // Get Transaction by id
         Individual transaction = ontReasoned.getIndividual(NS + id);
 
-
         if(transaction != null){
             isCommercial = transaction.hasOntClass(commercialClass);
         }
@@ -271,7 +275,6 @@ public class HomeController extends Controller {
 
         // Get Transaction by id
         Individual transaction = ontReasoned.getIndividual(NS + id);
-
 
         if(transaction != null){
             isPersonal = transaction.hasOntClass(personalClass);
@@ -305,7 +308,6 @@ public class HomeController extends Controller {
         // Get Transaction by id
         Individual transaction = ontReasoned.getIndividual(NS + id);
 
-
         if(transaction != null){
             isPurchase = transaction.hasOntClass(purchaseClass);
         }
@@ -337,7 +339,6 @@ public class HomeController extends Controller {
 
         // Get Transaction by id
         Individual transaction = ontReasoned.getIndividual(NS + id);
-
 
         if(transaction != null){
             isRefund = transaction.hasOntClass(refundClass);
@@ -371,7 +372,6 @@ public class HomeController extends Controller {
         // Get Merchant by id
         Individual merchant = ontReasoned.getIndividual(NS + id);
 
-
         if(merchant != null){
             isTrusted = merchant.hasOntClass(trustedClass);
         }
@@ -379,7 +379,6 @@ public class HomeController extends Controller {
         printOntology();
         
         ObjectNode response = Json.newObject();
-        // ObjectMapper mapper = new ObjectMapper();
 
         if(isTrusted != null){
             response.put("status", SUCCESS);
