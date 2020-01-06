@@ -1,0 +1,26 @@
+BreastCancerDiagnosis {
+
+roles Patient, Physician, Pathologist, Radiologist, TumorBoard
+parameters out ID key, out name, out diagnosis
+private person, tissue, calcification, cells, pathoReport, radioReport, findingsPhy, findingsPatho, findingsRadio
+
+Patient -> Physician: visit[out ID key, out name]
+
+Physician -> Pathologist: sendBiopsy[in ID, in name, out tissue]
+Physician -> Radiologist: sendPatient[in ID, in name, in tissue, out person]
+
+Pathologist -> TumorBoard: sendCells[in ID, in tissue, nil pathoReport, out cells]
+Pathologist -> Physician: sendPathoReport[in ID, in tissue, nil cells, out pathoReport]
+
+Radiologist -> TumorBoard: sendCalcification[in ID, in person, nil radioReport, out calcification]
+Radiologist -> Physician: sendRadioReport[in ID, in person, nil calcification, out radioReport]
+
+TumorBoard -> Physician: sendFindingsPhy[in ID, in cells, in calcification, out findingsPhy]
+
+TumorBoard -> Pathologist: sendFindingsPatho[in ID, in findingsPhy, out findingsPatho]
+TumorBoard -> Radiologist: sendFindingsRadio[in ID, in findingsPhy, out findingsRadio]
+
+Physician -> Patient: diagnosis[in ID, in name, in pathoReport, in radioReport, out diagnosis]
+Physician -> Patient: diagnosis[in ID, in name, in findingsPhy, out diagnosis]
+Physician -> Patient: diagnosis[in ID, in name, nil tissue, out diagnosis]
+}

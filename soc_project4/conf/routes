@@ -1,0 +1,77 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                           controllers.HomeController.index
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+################
+# Project 3 APIs
+################
+
+# Assume ID will be unique across everything. Use IDs as IRI suffixes
+# Example: http://your.IRI.here#merchant1
+
+# Add an individual to Merchant class.
+POST   /addmerchant/:uniqueID       controllers.HomeController.addMerchant(uniqueID:String)
+
+# Add an individual to Consumer class
+POST   /addconsumer/:uniqueID       controllers.HomeController.addConsumer(uniqueID:String)
+
+# Add an individual to Transaction class. Set associated properties
+POST   /addtransaction/:senderID/:receiverID/:transactionID      controllers.HomeController.addTransaction(senderID:String, receiverID:String, transactionID:String)
+
+# Return whether a transaction is commercial. The transaction ID is what was
+# supplied while creating the transaction. If you used it as an IRI
+# suffix, you shouldn’t have any problems fetching it.
+GET    /iscommercial/:transactionID     controllers.HomeController.isCommercial(transactionID:String)
+
+# Return whether a transaction is personal transaction
+GET    /ispersonal/:transactionID       controllers.HomeController.isPersonal(transactionID:String)
+
+# Return whether a transaction is a purchase transaction
+GET    /ispurchase/:transactionID       controllers.HomeController.isPurchase(transactionID:String)
+
+# Return whether a transaction is a refund transaction
+GET    /isrefund/:transactionID         controllers.HomeController.isRefund(transactionID:String)
+
+# Return whether a merchange is trusted. If ID doesn't belong to a merchant,
+# return an error message
+GET    /istrusted/:merchantID           controllers.HomeController.isTrusted(merchantID:String)
+
+# Reload the ontology (or delete all added individuals) so that we can start
+# testing afresh
+# (Project 4 additions)
+# Delete all data in you knowledge base about banks, and any other data you were maintaing
+# Delete the log files too. 
+# Reset system to a clean state
+POST   /reset                           controllers.HomeController.reset()
+
+################
+# Project 4 APIs
+################
+
+# Nationailty will be one of "local" or "international" in lowercase. ID will be unique
+POST    /addbank/:nationality/:bankID   controllers.HomeController.addBank(nationality:String, bankID:String)
+
+# Try to add a transaction. If successful, use the transactionRequestID as the transactionID.
+# If unsuccessful, use the ID in the log anyway.
+# A failure should specify the rule number that caused the failure
+# Category will be one of the ones listed before, in all lowercase.
+# Amount will be a whole number 
+POST    /transactionrequest/:senderID/:receiverID/:bankID/:category/:amount/:transactionRequestID   controllers.HomeController.addTransactionRequest(senderID: String, receiverID: String, bankID: String, category: String, amount: Integer, transactionRequestID: String)
+
+# Returns whether a bank is blacklisted
+GET     /isblacklisted/:bankID          controllers.HomeController.isBlacklisted(bankID:String)
+
+# Returns the number of rejectsion suffered by a bank
+GET     /bankrejections/:bankID         controllers.HomeController.getBankRejections(bankID:String)
+
+# Get rejection log
+GET     /rejectionlog                   controllers.HomeController.rejectionLog()
+
+# Get acceptance log
+GET     /acceptancelog                  controllers.HomeController.acceptanceLog()

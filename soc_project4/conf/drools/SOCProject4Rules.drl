@@ -1,0 +1,172 @@
+package drools
+
+import models.Bank;
+import models.TransactionRequest;
+import org.apache.jena.ontology.*;
+
+global String NS;
+
+// A bank, once blacklisted, can no longer process any transactions
+rule "1"
+dialect "mvel"
+salience -1
+activation-group "Transaction validation"
+no-loop true
+when
+    $b : Bank($b.isBlacklisted() == true)
+    $t : TransactionRequest($t.isProcessed() == false && $t.getBankId() == $b.getId())
+then
+    System.out.println("Transaction " + $t.getId() + " breaks rule 1 - rejected");
+    $t.setBrokenRule("1");
+    $b.setConsecutiveRejections($b.getConsecutiveRejections() + 1);
+    $b.setTotalRejections($b.getTotalRejections() + 1);
+    System.out.println("Bank " + $b.getId() + " has " + $b.getConsecutiveRejections() + " consecutive rejections (" + $b.getTotalRejections() + " total)");
+    $t.setApproved(false);
+    $t.setProcessed(true);
+    update( $t );
+end
+
+// A transaction request belonging to the category of “Medical”, must go through,
+// regardless of what the following rules evaluate to (unless the bank is blacklisted)
+rule "2"
+dialect "mvel"
+salience -2
+activation-group "Transaction validation"
+no-loop true
+when
+    $t : TransactionRequest($t.isProcessed() == false && $t.getCategory() == "Medical")
+then
+    System.out.println("Transaction " + $t.getId() + " meets rule 2 - approved");
+    $t.setProcessed(true);
+    update( $t );
+end
+
+// A transaction request with category “Weapons” requires that (necessary, but not
+// sufficient conditions):
+// a. Both the sender and the receiver be trusted (note that only merchants can be
+// trusted, but you just need to check for membership in the class Trusted in your
+// ontology)
+// b. The bank must be local
+rule "3a"
+dialect "mvel"
+salience -3
+activation-group "Transaction validation"
+no-loop true
+when
+    $t : TransactionRequest($t.isProcessed() == false && $t.getCategory() == "Weapons" )
+    $b : Bank($b.getId() == $t.getBankId())
+    TransactionRequest(!$t.areBothTrusted())
+then
+    System.out.println("Transaction " + $t.getId() + " breaks rule 3a - rejected");
+    $t.setBrokenRule("3a");
+    $b.setConsecutiveRejections($b.getConsecutiveRejections() + 1);
+    $b.setTotalRejections($b.getTotalRejections() + 1);
+    System.out.println("Bank " + $b.getId() + " has " + $b.getConsecutiveRejections() + " consecutive rejections (" + $b.getTotalRejections() + " total)");
+    $t.setApproved(false);
+    $t.setProcessed(true);
+    update( $t );
+end
+
+// A transaction request with category “Weapons” requires that (necessary, but not
+// sufficient conditions):
+// a. Both the sender and the receiver be trusted (note that only merchants can be
+// trusted, but you just need to check for membership in the class Trusted in your
+// ontology)
+// b. The bank must be local
+rule "3b"
+dialect "mvel"
+salience -3
+activation-group "Transaction validation"
+no-loop true
+when
+    $b : Bank($b.getNationality() != "local")
+    $t : TransactionRequest($t.isProcessed() == false && $t.getCategory() == "Weapons" && $t.getBankId() == $b.getId())
+then
+    System.out.println("Transaction " + $t.getId() + " breaks rule 3b - rejected");
+    $t.setBrokenRule("3b");
+    $b.setConsecutiveRejections($b.getConsecutiveRejections() + 1);
+    $b.setTotalRejections($b.getTotalRejections() + 1);
+    System.out.println("Bank " + $b.getId() + " has " + $b.getConsecutiveRejections() + " consecutive rejections (" + $b.getTotalRejections() + " total)");
+    $t.setApproved(false);
+    $t.setProcessed(true);
+    update( $t );
+end
+
+// A transaction request with amount >$100,000 must have at least one of the participants Trusted.
+rule "4"
+dialect "mvel"
+salience -5
+activation-group "Transaction validation"
+no-loop true
+when
+    $t : TransactionRequest($t.isProcessed() == false && $t.getAmount() > 100000)
+    $b : Bank($b.getId() == $t.getBankId())
+    TransactionRequest(!$t.isOneTrusted())
+then
+    System.out.println("Transaction " + $t.getId() + " breaks rule 4 - rejected");
+    $t.setBrokenRule("4");
+    $b.setConsecutiveRejections($b.getConsecutiveRejections() + 1);
+    $b.setTotalRejections($b.getTotalRejections() + 1);
+    System.out.println("Bank " + $b.getId() + " has " + $b.getConsecutiveRejections() + " consecutive rejections (" + $b.getTotalRejections() + " total)");
+    $t.setApproved(false);
+    $t.setProcessed(true);
+    update( $t );
+end
+
+// A transaction request with amount >10 times the average amount for the given bank
+// should be rejected (except if it’s the bank’s first transaction).
+rule "5"
+dialect "mvel"
+salience -6
+activation-group "Transaction validation"
+no-loop true
+when
+    $b : Bank($b.getTotalApproved() > 0)
+    $t : TransactionRequest($t.isProcessed() == false && $t.getBankId() == $b.getId() && ($t.getAmount() > ($b.getAvgAmount() * 10)))
+then
+    System.out.println("Transaction " + $t.getId() + " breaks rule 5 - rejected");
+    $t.setBrokenRule("5");
+    $b.setConsecutiveRejections($b.getConsecutiveRejections() + 1);
+    $b.setTotalRejections($b.getTotalRejections() + 1);
+    System.out.println("Bank " + $b.getId() + " has " + $b.getConsecutiveRejections() + " consecutive rejections (" + $b.getTotalRejections() + " total)");
+    $t.setApproved(false);
+    $t.setProcessed(true);
+    update( $t );
+end
+
+// If <25% of a bank’s past transaction involved a trusted participant, then the bank can no
+// longer process transactions that don’t involve a trusted participant (until the fraction goes
+// up to 25% again).
+rule "6"
+dialect "mvel"
+salience -7
+activation-group "Transaction validation"
+no-loop true
+when
+    $b : Bank(($b.getTotalTrusted() / (double)$b.getTotalApproved()) < 0.25)
+    $t : TransactionRequest($t.isProcessed() == false && $t.getBankId() == $b.getId())
+    TransactionRequest(!$t.isOneTrusted())
+then
+    System.out.println("Transaction " + $t.getId() + " breaks rule 6 - rejected");
+    $t.setBrokenRule("6");
+    $b.setConsecutiveRejections($b.getConsecutiveRejections() + 1);
+    $b.setTotalRejections($b.getTotalRejections() + 1);
+    System.out.println("Bank " + $b.getId() + " has " + $b.getConsecutiveRejections() + " consecutive rejections (" + $b.getTotalRejections() + " total)");
+    $t.setApproved(false);
+    $t.setProcessed(true);
+    update( $t );
+end
+
+// If a bank suffers 3 transaction rejections in a row, blacklist the bank
+rule "7"
+dialect "mvel"
+salience 0
+activation-group "Transaction validation"
+no-loop true
+when
+    $b : Bank($b.getConsecutiveRejections() >= 3 && $b.isBlacklisted() == false)
+then
+    System.out.println("Bank " + $b.getId() + " has reached " + $b.getConsecutiveRejections() + " consecutive rejections - blacklisted");
+    $b.setBlacklisted(true);
+    update ( $b );
+end
