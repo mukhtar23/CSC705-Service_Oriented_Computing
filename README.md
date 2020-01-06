@@ -1,6 +1,6 @@
-# CSC705-Service_Oriented_Computing
+# CSC750-Service_Oriented_Computing
 
-NC State University. CSC 705 - Service Oriented Computing
+NC State University. CSC 750 - Service Oriented Computing
 
 These are all the projects I had to do for the class. They each have the project requirements of what I had to do and how to run the projects.
 
