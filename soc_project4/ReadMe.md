@@ -1,3 +1,3 @@
-## Project 4 Assignment and Instructions
+## Project 4 Assignment
 
-[pdf](P4-assignment.pdf)
+[Instructions](P4-assignment.pdf)
